@@ -1,2 +1,13 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import { selectedTab } from '$lib/extras';
+	import Dashboard from '../lib/views/Dashboard.svelte';
+    import Settings from '../lib/views/Settings.svelte';
+</script>
+
+<div class="max-w-[1080px] mx-auto">
+    {#if $selectedTab == 'dashboard'}
+        <Dashboard></Dashboard>
+    {:else}
+        <Settings></Settings>
+    {/if}
+</div>
