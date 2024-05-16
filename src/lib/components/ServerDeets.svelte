@@ -1,17 +1,41 @@
 <script lang="ts">
-	import { reportStatus, startServer, type Server } from '$lib/mserver';
+	import { startServer, stopServer, type Server } from '$lib/mserver';
 
 	export let server: Server;
+	let running = false;
 
-	const start = async () => {
+	const stop = async () => {
 		try {
-			startServer(server.ID)
-		} catch(error) {
-			console.log(error)
+			stopServer(server.ID);
+		} catch (error) {
+			console.log(error);
 		}
 	}
 
-	reportStatus(server.ID)
+	const start = async () => {
+		try {
+			startServer(server.ID);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const reportStatus = (id: string) => {
+		const ws = new WebSocket(`ws://localhost:3000/server/statusreport/${id}`);
+
+		ws.addEventListener('message', (message: any) => {
+			const status = JSON.parse(message.data)
+			if (status.not_running) {
+				// console.log(message.data)
+				running = false;
+			} else {
+				running = true;
+			}
+			console.log(message.data);
+		});
+	};
+
+	reportStatus(server.ID);
 
 	let isRunning = false;
 </script>
@@ -19,7 +43,15 @@
 <div class="bg-slate-950 p-4 rounded-md border border-slate-500 flex-col space-y-4">
 	<div class="flex justify-between items-center mx-4">
 		<h1 class="text-3xl font-bold">{server.Name}</h1>
-        <button on:click={start} class="w-24 bg-emerald-700 hover:bg-emerald-800 py-1 rounded-md">Start</button>
+		{#if running}
+			<button on:click={stop} class="w-24 bg-red-700 hover:bg-red-800 py-1 rounded-md"
+				>Stop</button
+			>
+		{:else}
+			<button on:click={start} class="w-24 bg-emerald-700 hover:bg-emerald-800 py-1 rounded-md"
+				>Start</button
+			>
+		{/if}
 	</div>
 	<!-- Console -->
 	<div

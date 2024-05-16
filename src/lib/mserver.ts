@@ -59,12 +59,23 @@ export const startServer = async (id: string) => {
     }
 }
 
-export const reportStatus = (id: string) => {
-    const ws = new WebSocket(`ws://localhost:3000/server/statusreport/${id}`)
+export const stopServer = async (id: string) => {
+    try {
+        const resp = await fetch(`http://localhost:3000/server/stop/${id}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
 
-    ws.addEventListener("message", (message: any) => {
-        console.log(message.data)
-    })
+        if (!resp.ok) {
+            const error = await resp.text();
+            throw new Error(error)
+        }
+    } catch(error) {
+        throw error
+    }
 }
 
 export type Server = {
