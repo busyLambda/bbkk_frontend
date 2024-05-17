@@ -86,3 +86,18 @@ export type Server = {
     DeletedAt: string
     DedicatedRam: number
 }
+
+export const getPaperData = async () => {
+    try {
+        const resp = await fetch(`https://api.papermc.io/v2/projects/paper`)
+
+        if (!resp.ok) {
+            const error = await resp.text();
+            throw new Error(error);
+        }
+
+        return await resp.json()
+    } catch(error) {
+        throw error
+    }
+}
