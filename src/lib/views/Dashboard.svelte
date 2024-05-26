@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { getAllServers, getServerByName, type Server } from '$lib/mserver';
+	import { getAllServers, getPaperData, getServerByName, type Server } from '$lib/mserver';
 	import ServerCard from '$lib/components/ServerCard.svelte';
 	import ServerDeets from '$lib/components/ServerDeets.svelte';
+	import CreateServerModal from '$lib/components/CreateServerModal.svelte';
 
 	let query = '';
 	let server: Server | null = null;
 	let servers: Server[] = [];
+	let isCreatingServer = false;
 
 	const queryServer = async () => {
 		try {
@@ -31,6 +33,8 @@
 	};
 </script>
 
+<CreateServerModal on:close={() => (isCreatingServer = false)} isOpen={isCreatingServer}
+></CreateServerModal>
 <div class="m-4 flex-col space-y-4 text-slate-100">
 	<div class="bg-slate-950 p-4 rounded-md border border-slate-500 flex justify-around">
 		<div class="space-x-4 items-center flex">
@@ -69,6 +73,10 @@
 				<div
 					class="bg-slate-950 border border-slate-500 w-full p-4 rounded-md flex flex-col space-y-4"
 				>
+					<button
+						on:mousedown={() => (isCreatingServer = true)}
+						class="bg-violet-600 py-2 rounded-md hover:bg-violet-700">Create new server</button
+					>
 					{#if servers.length > 0}
 						{#each servers as server}
 							<ServerCard on:open={openServer} {server}></ServerCard>

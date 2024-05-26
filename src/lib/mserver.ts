@@ -1,3 +1,25 @@
+export const createServer = async (server: any) => {
+    try {
+        const resp = await fetch(`http://localhost:3000/server/create`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(server)
+        });
+
+        if (resp.ok) {
+            return await resp.json();
+        } else {
+            const error = await resp.text();
+            throw new Error(error);
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const getServerByName = async (name: string) => {
     try {
         const resp = await fetch(`http://localhost:3000/server/name/${name}`, {
@@ -6,16 +28,16 @@ export const getServerByName = async (name: string) => {
             headers: {
                 'Content-Type': 'application/json'
             }
-        })
+        });
 
         if (resp.ok) {
-            return await resp.json()
+            return await resp.json();
         } else {
-            const error = await resp.text()
-            throw new Error(error)
+            const error = await resp.text();
+            throw new Error(error);
         }
     } catch (error) {
-        throw error
+        throw error;
     }
 }
 
@@ -30,13 +52,13 @@ export const getAllServers = async () => {
         })
 
         if (resp.ok) {
-            return await resp.json()
+            return await resp.json();
         } else {
-            const error = await resp.text()
-            throw new Error(error)
+            const error = await resp.text();
+            throw new Error(error);
         }
     } catch (error) {
-        throw error
+        throw error;
     }
 }
 
@@ -52,10 +74,10 @@ export const startServer = async (id: string) => {
 
         if (!resp.ok) {
             const error = await resp.text();
-            throw new Error(error)
+            throw new Error(error);
         }
-    } catch(error) {
-        throw error
+    } catch (error) {
+        throw error;
     }
 }
 
@@ -67,14 +89,14 @@ export const stopServer = async (id: string) => {
             headers: {
                 'Content-Type': 'application/json'
             }
-        })
+        });
 
         if (!resp.ok) {
             const error = await resp.text();
-            throw new Error(error)
+            throw new Error(error);
         }
-    } catch(error) {
-        throw error
+    } catch (error) {
+        throw error;
     }
 }
 
@@ -89,15 +111,15 @@ export type Server = {
 
 export const getPaperData = async () => {
     try {
-        const resp = await fetch(`https://api.papermc.io/v2/projects/paper`)
+        const resp = await fetch(`https://api.papermc.io/v2/projects/paper`);
 
         if (!resp.ok) {
             const error = await resp.text();
             throw new Error(error);
         }
 
-        return await resp.json()
-    } catch(error) {
-        throw error
+        return await resp.json();
+    } catch (error) {
+        throw error;
     }
 }
