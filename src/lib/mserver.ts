@@ -1,7 +1,19 @@
-export const createServer = async (server: any) => {
+const PAPERAPI: string = "https://api.papermc.io/v2/projects/paper";
+
+export type CreateServer = {
+    name: string,
+    dedicated_ram: number,
+    version: string,
+    build: string,
+} 
+
+export const createServer = async (server: CreateServer) => {
     try {
+        const build = await getLatestBuild(server.version);
+        server.build = `${build.build}`;
+
         const resp = await fetch(`http://localhost:3000/server/create`, {
-            method: 'GET',
+            method: 'POST',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
@@ -10,7 +22,7 @@ export const createServer = async (server: any) => {
         });
 
         if (resp.ok) {
-            return await resp.json();
+            return await resp.json() as Server;
         } else {
             const error = await resp.text();
             throw new Error(error);
@@ -119,6 +131,22 @@ export const getPaperData = async () => {
         }
 
         return await resp.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getLatestBuild = async (version: string) => {
+    try {
+        const resp = await fetch(`${PAPERAPI}/versions/${version}/builds`);
+
+        if (!resp.ok) {
+            const error = await resp.text();
+            throw new Error(error);
+        }
+
+        const tmp_obj = await resp.json();
+        return tmp_obj.builds[tmp_obj.builds.length-1];
     } catch (error) {
         throw error;
     }
