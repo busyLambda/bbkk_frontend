@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { getAllServers, getPaperData, getServerByName, type Server } from '$lib/mserver';
+	import {
+		getAllServers,
+		getLatestBuild,
+		getPaperData,
+		getServerByName,
+		type Server
+	} from '$lib/mserver';
 	import ServerCard from '$lib/components/ServerCard.svelte';
 	import ServerDeets from '$lib/components/ServerDeets.svelte';
 	import CreateServerModal from '$lib/components/CreateServerModal.svelte';
@@ -23,6 +29,14 @@
 		console.log(server);
 	};
 
+	const handleClose = (event: CustomEvent<null | Server>) => {
+		if (event.detail) {
+			servers = [...servers, event.detail];
+		}
+
+		isCreatingServer = false;
+	};
+
 	const initialState = async () => {
 		try {
 			query = '';
@@ -33,8 +47,7 @@
 	};
 </script>
 
-<CreateServerModal on:close={() => (isCreatingServer = false)} isOpen={isCreatingServer}
-></CreateServerModal>
+<CreateServerModal on:close={handleClose} isOpen={isCreatingServer}></CreateServerModal>
 <div class="m-4 flex-col space-y-4 text-slate-100">
 	<div class="bg-slate-950 p-4 rounded-md border border-slate-500 flex justify-around">
 		<div class="space-x-4 items-center flex">
@@ -61,7 +74,7 @@
 		</div>
 	</div>
 	{#if server}
-		<ServerDeets {server}></ServerDeets>
+		<ServerDeets on:back={() => { server = null }} {server}></ServerDeets>
 	{:else}
 		{#await initialState()}
 			Loading
